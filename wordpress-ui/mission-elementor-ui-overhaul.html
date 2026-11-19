@@ -1,0 +1,919 @@
+<style id="mission-cloud-ui-polish">
+  :root {
+    --mc-burgundy: #7e151c;
+    --mc-burgundy-dark: #4a0d13;
+    --mc-gold: #d4af37;
+    --mc-ink: #1e1720;
+    --mc-muted: #5d525f;
+    --mc-surface: #ffffff;
+    --mc-tint: #f8f7fa;
+    --mc-border: #ece7ef;
+  }
+
+  /* =========================================================
+     1. GLOBAL HEADER & NAVIGATION PARITY ACROSS ALL PAGES
+     ========================================================= */
+  header.elementor-top-section > .elementor-container > .elementor-column > .elementor-widget-wrap,
+  nav.elementor-top-section > .elementor-container > .elementor-column > .elementor-widget-wrap {
+    display: flex !important;
+    flex-direction: column !important;
+    padding: 0 !important;
+  }
+
+  .elementor-widget-nav-menu.elementor-global-2833,
+  header.elementor-top-section .elementor-widget-nav-menu,
+  .mc-injected-topbar {
+    order: -10 !important;
+    width: 100% !important;
+    background: #ffffff !important;
+    border-bottom: 1px solid rgba(126, 21, 28, 0.1) !important;
+    padding: 8px 16px !important;
+    margin: 0 !important;
+    position: relative !important;
+    z-index: 120 !important;
+    box-shadow: 0 2px 10px rgba(30, 23, 32, 0.04);
+  }
+
+  .elementor-widget-nav-menu .elementor-nav-menu--main .elementor-item {
+    font-weight: 600 !important;
+    color: var(--mc-ink) !important;
+    padding: 12px 14px !important;
+    letter-spacing: 0.2px;
+  }
+
+  .elementor-widget-nav-menu .elementor-nav-menu--main .elementor-item:hover,
+  .elementor-widget-nav-menu .elementor-nav-menu--main .elementor-item.elementor-item-active {
+    color: var(--mc-burgundy) !important;
+  }
+
+  .elementor-widget-nav-menu .elementor-nav-menu--dropdown {
+    z-index: 200 !important;
+  }
+
+  /* Hide replaced legacy static banner + absolute heading on inner pages once slider mounts */
+  body.mc-slider-mounted header.elementor-top-section .mc-legacy-hidden {
+    display: none !important;
+  }
+
+  /* Fallback injected top bar for orphan pages without global-2833 */
+  .mc-injected-topbar-inner {
+    max-width: 1180px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 6px 14px;
+  }
+
+  .mc-injected-topbar-inner a {
+    color: var(--mc-ink);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+
+  .mc-injected-topbar-inner a:hover {
+    color: var(--mc-burgundy);
+    background: #f6eff2;
+  }
+
+  /* =========================================================
+     2. INNER-PAGE MULTI-PHOTO HERO SLIDER (HOMEPAGE PARITY)
+     ========================================================= */
+  .mc-hero-slider {
+    order: -5;
+    position: relative;
+    width: 100%;
+    height: clamp(300px, 40vw, 440px);
+    overflow: hidden;
+    background: #1e1720;
+    isolation: isolate;
+  }
+
+  .mc-hero-slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.9s ease-in-out;
+    pointer-events: none;
+  }
+
+  .mc-hero-slide.is-active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .mc-hero-slide-bg {
+    position: absolute;
+    inset: -4%;
+    background-size: cover;
+    background-position: center 28%;
+    transform: scale(1.03);
+    transition: transform 6.2s ease-out;
+  }
+
+  .mc-hero-slide.is-active .mc-hero-slide-bg {
+    transform: scale(1.1);
+  }
+
+  .mc-hero-scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(22, 10, 14, 0.36) 0%,
+      rgba(74, 13, 19, 0.54) 55%,
+      rgba(18, 12, 18, 0.78) 100%
+    );
+    z-index: 2;
+  }
+
+  .mc-hero-content {
+    position: relative;
+    z-index: 3;
+    height: 100%;
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 24px 56px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #ffffff;
+  }
+
+  .mc-hero-eyebrow {
+    display: inline-block;
+    padding: 5px 14px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(236, 211, 99, 0.55);
+    color: #f6e088;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    backdrop-filter: blur(4px);
+  }
+
+  .mc-hero-title {
+    margin: 0 0 10px !important;
+    color: #ffffff !important;
+    font-size: clamp(28px, 4.2vw, 48px) !important;
+    font-weight: 800 !important;
+    line-height: 1.15 !important;
+    text-shadow: 0 4px 18px rgba(0, 0, 0, 0.45);
+  }
+
+  .mc-hero-subtitle {
+    margin: 0;
+    max-width: 680px;
+    color: rgba(255, 255, 255, 0.92);
+    font-size: clamp(14px, 1.5vw, 17px);
+    line-height: 1.5;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+  }
+
+  .mc-hero-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 4;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    background: rgba(20, 12, 16, 0.45);
+    color: #ffffff;
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.18s ease, transform 0.18s ease;
+  }
+
+  .mc-hero-arrow:hover {
+    background: var(--mc-burgundy);
+    transform: translateY(-50%) scale(1.06);
+  }
+
+  .mc-hero-arrow.is-prev { left: 14px; }
+  .mc-hero-arrow.is-next { right: 14px; }
+
+  .mc-hero-dots {
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 4;
+    display: flex;
+    gap: 8px;
+  }
+
+  .mc-hero-dot {
+    width: 9px;
+    height: 9px;
+    padding: 0;
+    border-radius: 999px;
+    border: none;
+    background: rgba(255, 255, 255, 0.48);
+    cursor: pointer;
+    transition: width 0.2s ease, background 0.2s ease;
+  }
+
+  .mc-hero-dot.is-active {
+    width: 24px;
+    background: #ecd363;
+  }
+
+  @media (max-width: 640px) {
+    .mc-hero-slider { height: 280px; }
+    .mc-hero-content { padding: 18px 44px; }
+    .mc-hero-arrow { width: 32px; height: 32px; font-size: 18px; }
+  }
+
+  /* =========================================================
+     3. GLOBAL SECTION RHYTHM, CARDS & TYPOGRAPHY POLISH
+     ========================================================= */
+  .elementor-section.elementor-section-boxed {
+    padding-top: clamp(24px, 3.2vw, 44px);
+    padding-bottom: clamp(24px, 3.2vw, 44px);
+  }
+
+  /* Homepage 4 quick-action icon boxes & Give icon cards */
+  .page-id-2212 .elementor-element-41d99165 .elementor-column > .elementor-widget-wrap,
+  .page-id-2234 .elementor-element-62a0dc42 .elementor-column > .elementor-widget-wrap {
+    background: #ffffff;
+    border: 1px solid var(--mc-border);
+    border-radius: 14px;
+    padding: 20px 16px !important;
+    box-shadow: 0 4px 14px rgba(30, 23, 32, 0.04);
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+  }
+
+  .page-id-2212 .elementor-element-41d99165 .elementor-column > .elementor-widget-wrap:hover,
+  .page-id-2234 .elementor-element-62a0dc42 .elementor-column > .elementor-widget-wrap:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(30, 23, 32, 0.08);
+  }
+
+  /* News & Homepage post cards */
+  .elementor-posts-container .elementor-post {
+    background: #ffffff;
+    border: 1px solid var(--mc-border);
+    border-radius: 14px;
+    overflow: hidden;
+    padding-bottom: 18px;
+    box-shadow: 0 4px 16px rgba(30, 23, 32, 0.05);
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+  }
+
+  .elementor-posts-container .elementor-post:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(30, 23, 32, 0.09);
+  }
+
+  .elementor-posts-container .elementor-post__text {
+    padding: 16px 18px 4px !important;
+  }
+
+  /* MEC slider framing */
+  .mec-skin-slider-container .mec-slider-t1-wrap {
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 10px 28px rgba(30, 23, 32, 0.08);
+  }
+
+  /* =========================================================
+     4. PAGE-SPECIFIC LAYOUT & CONTENT ENHANCEMENTS
+     ========================================================= */
+  /* Fix /ministries/ "Why We Serve" -30px overlap across all viewports */
+  .elementor-2235 .elementor-element-3ab1845,
+  .elementor-2235 .elementor-element-46abff3b {
+    margin-top: 0 !important;
+    padding-top: 6px !important;
+  }
+
+  .elementor-2235 .elementor-element-69ce0f79 .elementor-container {
+    row-gap: 24px;
+    align-items: center;
+  }
+
+  .elementor-2235 .elementor-element-7660a5a1 img {
+    border-radius: 14px;
+    box-shadow: 0 8px 24px rgba(30, 23, 32, 0.08);
+  }
+
+  @media (max-width: 767px) {
+    .elementor-2235 .elementor-element-7660a5a1 {
+      margin-bottom: 12px !important;
+    }
+  }
+
+  /* Enriched Ministries accordion panels */
+  .elementor-2235 .elementor-accordion .elementor-accordion-item {
+    border: 1px solid var(--mc-border);
+    border-radius: 12px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    background: #ffffff;
+  }
+
+  .elementor-2235 .elementor-accordion .elementor-tab-title {
+    padding: 16px 20px !important;
+    font-weight: 700;
+  }
+
+  .mc-ministry-panel {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: flex-start;
+    padding: 6px 4px 10px;
+  }
+
+  .mc-ministry-panel-media {
+    flex: 0 0 180px;
+    max-width: 220px;
+  }
+
+  .mc-ministry-panel-media img {
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    float: none !important;
+    margin: 0 !important;
+    display: block;
+    box-shadow: 0 4px 14px rgba(30, 23, 32, 0.08);
+  }
+
+  .mc-ministry-panel-body {
+    flex: 1 1 260px;
+  }
+
+  .mc-ministry-meta {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--mc-burgundy);
+    background: #faeff1;
+    padding: 4px 10px;
+    border-radius: 999px;
+    margin-bottom: 8px;
+  }
+
+  .mc-ministry-panel-body p {
+    margin: 0 0 12px;
+    color: var(--mc-ink);
+    line-height: 1.6;
+  }
+
+  .mc-pill-link {
+    display: inline-block;
+    background: var(--mc-burgundy);
+    color: #ffffff !important;
+    text-decoration: none !important;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 8px 16px;
+    border-radius: 999px;
+    transition: opacity 0.15s ease;
+  }
+
+  .mc-pill-link:hover { opacity: 0.9; }
+
+  /* Give page tap-to-give button pills */
+  .page-id-2234 a[href*="cash.app"],
+  .page-id-2234 a[href*="venmo.com"] {
+    display: inline-block;
+    margin: 4px 8px 4px 0;
+    padding: 9px 18px;
+    border-radius: 999px;
+    background: var(--mc-burgundy);
+    color: #ffffff !important;
+    font-weight: 700;
+    text-decoration: none !important;
+    box-shadow: 0 4px 12px rgba(126, 21, 28, 0.16);
+  }
+
+  /* Contact page summary banner */
+  .mc-contact-banner {
+    max-width: 980px;
+    margin: 0 auto 24px;
+    padding: 20px 24px;
+    background: #ffffff;
+    border: 1px solid var(--mc-border);
+    border-top: 4px solid var(--mc-burgundy);
+    border-radius: 14px;
+    box-shadow: 0 6px 20px rgba(30, 23, 32, 0.05);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 16px;
+  }
+
+  .mc-contact-banner h4 {
+    margin: 0 0 4px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--mc-burgundy);
+  }
+
+  .mc-contact-banner p {
+    margin: 0;
+    font-size: 14px;
+    color: var(--mc-ink);
+  }
+
+  /* Privacy policy readability & Photo Gallery polish */
+  .page-id-2724 .elementor-element-b8971d1 .elementor-widget-container {
+    max-width: 860px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  .page-id-2991 .e-gallery-item {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 14px rgba(30, 23, 32, 0.07);
+  }
+
+  /* =========================================================
+     5. GLOBAL FOOTER PARITY, LOGO CENTERING & TYPOGRAPHY FIX
+     ========================================================= */
+  footer.elementor-location-footer .elementor-element-6acf3bca {
+    padding: 40px 20px 32px !important;
+  }
+
+  footer.elementor-location-footer .elementor-element-6acf3bca .elementor-widget-wrap {
+    align-items: center !important;
+    text-align: center !important;
+    gap: 6px;
+  }
+
+  footer.elementor-location-footer .elementor-element-f6e4034 img {
+    max-width: 240px;
+    height: auto;
+    border-radius: 12px;
+    margin: 0 auto;
+  }
+
+  /* Neutralize accidental drop-cap class on footer contact info */
+  footer.elementor-location-footer .elementor-element-a7be4d1 .elementor-drop-cap {
+    display: none !important;
+  }
+
+  footer.elementor-location-footer .elementor-element-a7be4d1 p:first-of-type::first-letter {
+    float: none !important;
+    font-size: inherit !important;
+    line-height: inherit !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  footer.elementor-location-footer .elementor-element-20870746 p:empty,
+  footer.elementor-location-footer .elementor-element-20870746 p:last-child:has(br:only-child) {
+    display: none;
+  }
+</style>
+
+<script id="mission-cloud-ui-overhaul-script">
+  (function () {
+    var P = {
+      sanctuary: "https://missionchurchcooljc.com/wp-content/uploads/2026/11/00_cover_sanctuary_worship_1920x1080-1.jpg",
+      unityGroup: "https://missionchurchcooljc.com/wp-content/uploads/2026/11/01_unity_sanctuary_group_portrait.jpg",
+      altarPrayer: "https://missionchurchcooljc.com/wp-content/uploads/2026/11/02_unity_altar_prayer_laying_hands-1.jpg",
+      handsLifted: "https://missionchurchcooljc.com/wp-content/uploads/2026/11/03_unity_congregation_hands_lifted_2048x1152_wide-1.jpg",
+      leadership: "https://missionchurchcooljc.com/wp-content/uploads/2026/11/04_unity_leadership_communion_honors.jpg",
+      backpack: "https://missionchurchcooljc.com/wp-content/uploads/2026/11/06_compassion_backpack_giveaway_families-1.jpg",
+      counseling: "https://missionchurchcooljc.com/wp-content/uploads/2026/11/08_compassion_prayer_counseling_ministry.jpg",
+      mothersPews: "https://missionchurchcooljc.com/wp-content/uploads/2026/11/11_fellowship_mothers_and_babies_pews.jpg",
+      sundayDinner: "https://missionchurchcooljc.com/wp-content/uploads/2026/11/14_fellowship_hall_family_sunday_dinner-1.jpg",
+      outdoorPicnic: "https://missionchurchcooljc.com/wp-content/uploads/2026/11/15_fellowship_outdoor_sunday_school_picnic-1.jpg",
+      praiseChoir: "https://missionchurchcooljc.com/wp-content/uploads/2026/11/16_joy_praise_team_and_choir-1.jpg",
+      youthAltar: "https://missionchurchcooljc.com/wp-content/uploads/2026/11/17_joy_youth_and_children_altar.jpg",
+      brotherhood: "https://missionchurchcooljc.com/wp-content/uploads/2026/11/20_joy_brotherhood_ministry_honors-1.jpg",
+      choirGold: "https://missionchurchcooljc.com/wp-content/uploads/2026/11/bonus_21_choir_worship_in_gold-1.jpg",
+      youthPlugged: "https://missionchurchcooljc.com/wp-content/uploads/2026/11/bonus_22_plugged_in_youth_fellowship.jpg",
+      sisterhood: "https://missionchurchcooljc.com/wp-content/uploads/2026/11/bonus_23_sisterhood_week_fellowship.jpg",
+      exterior: "https://missionchurchcooljc.com/wp-content/uploads/2026/11/church_exterior.jpg",
+      pastor: "https://missionchurchcooljc.com/wp-content/uploads/2026/11/pastor_mitchell.jpg"
+    };
+
+    var PAGE_SLIDERS = {
+      "/about-mission/": {
+        eyebrow: "Welcome to Mission Church COOLJC",
+        title: "About Us",
+        subtitle: "Standing together in Apostolic faith, love, and community in Somerville since our founding.",
+        slides: [P.sanctuary, P.unityGroup, P.pastor, P.exterior, P.leadership]
+      },
+      "/im-new/": {
+        eyebrow: "Plan Your First Sunday With Us",
+        title: "I'm New Here",
+        subtitle: "10:00 AM Prayer · 10:30 AM Sunday School · 12:00 PM Worship Service at 130 Highland Ave.",
+        slides: [P.exterior, P.mothersPews, P.sundayDinner, P.sanctuary, P.unityGroup]
+      },
+      "/photo-gallery/": {
+        eyebrow: "Come Together · Stay Together · Work Together",
+        title: "Photo Gallery",
+        subtitle: "Worship moments, community outreach, and fellowship across our Mission Church family.",
+        slides: [P.handsLifted, P.choirGold, P.outdoorPicnic, P.sisterhood, P.brotherhood]
+      },
+      "/church-community-news/": {
+        eyebrow: "Latest Church Announcements",
+        title: "Church News",
+        subtitle: "Stay informed on upcoming fellowships, building fund milestones, and ministry highlights.",
+        slides: [P.unityGroup, P.backpack, P.sundayDinner, P.praiseChoir, P.handsLifted]
+      },
+      "/mission-events/": {
+        eyebrow: "2026 Theme · Moving In Obedience",
+        title: "Mission Events",
+        subtitle: "Worship services, weekly prayer lines, community pantry dates, and district gatherings.",
+        slides: [P.praiseChoir, P.altarPrayer, P.youthPlugged, P.leadership, P.sanctuary]
+      },
+      "/message-nuggets/": {
+        eyebrow: "Biblical Encouragement & Short Devotionals",
+        title: "Message Nuggets",
+        subtitle: "Bite-sized Gospel encouragement and worship highlights to strengthen your week.",
+        slides: [P.handsLifted, P.pastor, P.altarPrayer, P.choirGold, P.sanctuary]
+      },
+      "/ministries/": {
+        eyebrow: "Serving Christ & Our Somerville Neighbors",
+        title: "Our Ministries",
+        subtitle: "Every gift has a place — discover how to serve alongside our departments and outreach teams.",
+        slides: [P.backpack, P.sisterhood, P.brotherhood, P.youthAltar, P.sundayDinner]
+      },
+      "/prayer/": {
+        eyebrow: "1 John 5:14 · Pray Without Ceasing",
+        title: "Prayer Ministry",
+        subtitle: "Sunday Sanctuary Prayer (10:00 AM) · Monday Pastor's Prayer (6:30 AM) · Tue–Thu Prayer Line (7:00 AM).",
+        slides: [P.altarPrayer, P.counseling, P.sanctuary, P.handsLifted]
+      },
+      "/give/": {
+        eyebrow: "Stewardship & Generosity · Luke 6:38",
+        title: "Ways to Give",
+        subtitle: "Thank you for cheerfully sowing into the ministry, outreach, and mission of Christ's church.",
+        slides: [P.sanctuary, P.backpack, P.exterior, P.leadership]
+      },
+      "/contact/": {
+        eyebrow: "130 Highland Ave, Somerville, MA 02143",
+        title: "Contact Us",
+        subtitle: "Reach our pastoral office, submit an inquiry, or connect with our care and welcome team.",
+        slides: [P.exterior, P.unityGroup, P.mothersPews, P.counseling]
+      },
+      "/privacy-policy/": {
+        eyebrow: "Transparency & Data Care",
+        title: "Privacy Policy",
+        subtitle: "How Mission Church Of Our Lord Jesus Christ safeguards visitor and member information.",
+        slides: [P.exterior, P.sanctuary, P.handsLifted]
+      },
+      "/abundant-life-groups/": {
+        eyebrow: "Midweek Study & Fellowship",
+        title: "Small Groups & Bible Study",
+        subtitle: "Connect midweek in Scripture study, prayer, and encouragement with our church family.",
+        slides: [P.handsLifted, P.unityGroup, P.youthPlugged, P.altarPrayer]
+      }
+    };
+
+    var MINISTRY_COPY = {
+      "Women's Department": {
+        meta: "Sisterhood · Fellowship & Prayer",
+        desc: "Empowering women of all ages to grow in the grace and knowledge of Christ through sisterhood fellowship, dedicated prayer gatherings, and annual Women's Council celebration services.",
+        ctaLabel: "See Upcoming Events",
+        ctaHref: "https://missionchurchcooljc.com/mission-events/"
+      },
+      "Men's Department": {
+        meta: "Brotherhood · Discipleship & Service",
+        desc: "Strengthening Christian men as servant-leaders in their homes, workplaces, and congregation through Brotherhood workshops, mutual accountability, and hands-on church stewardship.",
+        ctaLabel: "Connect With Us",
+        ctaHref: "https://missionchurchcooljc.com/contact/"
+      },
+      "Youth Department": {
+        meta: "ABYPU · Next Generation",
+        desc: "Raising up young believers in joyful worship, Biblical foundation, and community through ABYPU Quarterly Youth Services, youth fellowship nights, and leadership development.",
+        ctaLabel: "View Youth News",
+        ctaHref: "https://missionchurchcooljc.com/church-community-news/"
+      },
+      "Sunday School Department": {
+        meta: "Sundays · 10:30 AM",
+        desc: "Interactive Bible study classes for children, teens, and adults every Sunday morning before worship, equipping saints of every generation to live out God's Word.",
+        ctaLabel: "Plan Your Sunday Visit",
+        ctaHref: "https://missionchurchcooljc.com/im-new/"
+      },
+      "Shepherd's Kitchen": {
+        meta: "1st Saturday Monthly · 9:15 AM – 10:45 AM",
+        desc: "Our community food pantry at 130 Highland Ave sharing fresh groceries, warm hospitality, and prayerful care with Somerville families and neighbors every first Saturday.",
+        ctaLabel: "View Pantry Schedule",
+        ctaHref: "https://missionchurchcooljc.com/mission-events/"
+      },
+      "Tabitha's Closet": {
+        meta: "Community Clothing Outreach",
+        desc: "Providing clean, new and gently used seasonal clothing with dignity and compassion to individuals and families throughout Somerville and Greater Boston.",
+        ctaLabel: "Inquire or Donate",
+        ctaHref: "https://missionchurchcooljc.com/contact/"
+      },
+      "Abundant Life Groups": {
+        meta: "Tuesday Bible Study (7:30 PM on Zoom)",
+        desc: "Our midweek discipleship rhythm brings the Mission Church family together Tuesday evenings at 7:30 PM on Zoom to dive deeply into Scripture, ask questions, and pray together.",
+        ctaLabel: "Check Zoom Schedule",
+        ctaHref: "https://missionchurchcooljc.com/mission-events/"
+      },
+      "Prayer Ministry": {
+        meta: "Sun 10 AM · Mon 6:30 AM · Tue–Thu 7 AM",
+        desc: "Interceding faithfully for our church, families, city, and world during Sunday pre-service Sanctuary Prayer and our live weekday Zoom prayer gatherings.",
+        ctaLabel: "Submit a Prayer Request",
+        ctaHref: "https://missionchurchcooljc.com/prayer/"
+      },
+      "Usher Board": {
+        meta: "Sundays · Sanctuary Hospitality",
+        desc: "Welcoming first-time guests and church members with a warm smile, assisting with seating, parking guidance, and orderly flow throughout our Sunday worship services.",
+        ctaLabel: "Volunteer to Serve",
+        ctaHref: "https://missionchurchcooljc.com/contact/"
+      },
+      "Allied Health": {
+        meta: "Holistic Wellness & Health Fairs",
+        desc: "Caring for the whole person—body, mind, and spirit—through community wellness education, annual health fairs, and preventative health support for our congregation and neighbors.",
+        ctaLabel: "Reach Care Team",
+        ctaHref: "https://missionchurchcooljc.com/contact/"
+      }
+    };
+
+    function normPath(pathname) {
+      var p = (pathname || "/").toLowerCase();
+      if (!p.endsWith("/")) p += "/";
+      return p;
+    }
+
+    function ensureTopNavAndSlider() {
+      var p = normPath(window.location.pathname);
+      if (p === "/") return;
+
+      var topHeader = document.querySelector("header.elementor-top-section, header.elementor-section");
+      var topWrap = topHeader
+        ? topHeader.querySelector(".elementor-column > .elementor-widget-wrap")
+        : null;
+
+      // Ensure orphan pages (/abundant-life-groups/, /privacy-policy-2/) get matching header nav
+      var existingNav = topWrap ? topWrap.querySelector(".elementor-widget-nav-menu") : null;
+      if (!existingNav && document.body) {
+        var bar = document.createElement("nav");
+        bar.className = "mc-injected-topbar";
+        bar.setAttribute("aria-label", "Primary Menu");
+        bar.innerHTML =
+          '<div class="mc-injected-topbar-inner">' +
+          '<a href="https://missionchurchcooljc.com/">Home</a>' +
+          '<a href="https://missionchurchcooljc.com/about-mission/">About</a>' +
+          '<a href="https://missionchurchcooljc.com/im-new/">I\u2019m New</a>' +
+          '<a href="https://missionchurchcooljc.com/photo-gallery/">Photo Gallery</a>' +
+          '<a href="https://missionchurchcooljc.com/church-community-news/">News</a>' +
+          '<a href="https://missionchurchcooljc.com/mission-events/">Mission Events</a>' +
+          '<a href="https://missionchurchcooljc.com/ministries/">Ministries</a>' +
+          '<a href="https://missionchurchcooljc.com/prayer/">Prayer</a>' +
+          '<a href="https://missionchurchcooljc.com/give/">Give</a>' +
+          '<a href="https://missionchurchcooljc.com/contact/">Contact</a>' +
+          "</div>";
+        if (topWrap) {
+          topWrap.insertBefore(bar, topWrap.firstChild);
+        } else {
+          document.body.insertBefore(bar, document.body.firstChild);
+        }
+      } else if (existingNav && topWrap) {
+        topWrap.insertBefore(existingNav, topWrap.firstChild);
+      }
+
+      var cfg = PAGE_SLIDERS[p];
+      if (!cfg || !topWrap || topWrap.querySelector(".mc-hero-slider")) return;
+
+      topWrap.querySelectorAll(".elementor-widget-image, .elementor-widget-heading").forEach(function (w) {
+        w.classList.add("mc-legacy-hidden");
+      });
+
+      var slider = document.createElement("section");
+      slider.className = "mc-hero-slider";
+      slider.setAttribute("aria-label", cfg.title + " Photo Slider");
+
+      var slidesHtml = cfg.slides
+        .map(function (src, idx) {
+          return (
+            '<div class="mc-hero-slide' +
+            (idx === 0 ? " is-active" : "") +
+            '">' +
+            '<div class="mc-hero-slide-bg" style="background-image:url(\'' +
+            src +
+            '\')"></div>' +
+            "</div>"
+          );
+        })
+        .join("");
+
+      var dotsHtml = cfg.slides
+        .map(function (_, idx) {
+          return (
+            '<button type="button" class="mc-hero-dot' +
+            (idx === 0 ? " is-active" : "") +
+            '" aria-label="Slide ' +
+            (idx + 1) +
+            '" data-idx="' +
+            idx +
+            '"></button>'
+          );
+        })
+        .join("");
+
+      slider.innerHTML =
+        slidesHtml +
+        '<div class="mc-hero-scrim"></div>' +
+        '<div class="mc-hero-content">' +
+        '<span class="mc-hero-eyebrow">' +
+        cfg.eyebrow +
+        "</span>" +
+        '<h1 class="mc-hero-title">' +
+        cfg.title +
+        "</h1>" +
+        '<p class="mc-hero-subtitle">' +
+        cfg.subtitle +
+        "</p>" +
+        "</div>" +
+        '<button type="button" class="mc-hero-arrow is-prev" aria-label="Previous slide">\u2039</button>' +
+        '<button type="button" class="mc-hero-arrow is-next" aria-label="Next slide">\u203a</button>' +
+        '<div class="mc-hero-dots">' +
+        dotsHtml +
+        "</div>";
+
+      var navEl = topWrap.querySelector(".elementor-widget-nav-menu, .mc-injected-topbar");
+      if (navEl && navEl.nextSibling) {
+        topWrap.insertBefore(slider, navEl.nextSibling);
+      } else {
+        topWrap.appendChild(slider);
+      }
+      document.body.classList.add("mc-slider-mounted");
+
+      var cur = 0;
+      var slides = slider.querySelectorAll(".mc-hero-slide");
+      var dots = slider.querySelectorAll(".mc-hero-dot");
+      function showSlide(n) {
+        cur = (n + slides.length) % slides.length;
+        slides.forEach(function (el, i) {
+          el.classList.toggle("is-active", i === cur);
+        });
+        dots.forEach(function (el, i) {
+          el.classList.toggle("is-active", i === cur);
+        });
+      }
+      slider.querySelector(".is-prev").addEventListener("click", function () { showSlide(cur - 1); });
+      slider.querySelector(".is-next").addEventListener("click", function () { showSlide(cur + 1); });
+      dots.forEach(function (d) {
+        d.addEventListener("click", function () { showSlide(Number(d.getAttribute("data-idx") || 0)); });
+      });
+      setInterval(function () { showSlide(cur + 1); }, 5500);
+    }
+
+    function polishPagesContent() {
+      var p = normPath(window.location.pathname);
+
+      // Home: fix "Tabitha'sCloset" typo
+      if (p === "/") {
+        document.querySelectorAll(".elementor-icon-box-title, h3").forEach(function (el) {
+          if (el.textContent && el.textContent.indexOf("Tabitha'sCloset") !== -1) {
+            el.textContent = el.textContent.replace("Tabitha'sCloset", "Tabitha's Closet");
+          }
+        });
+      }
+
+      // Ministries: enrich empty 250x250 accordion panels
+      if (p === "/ministries/") {
+        document.querySelectorAll(".elementor-accordion-item").forEach(function (item) {
+          var titleEl = item.querySelector(".elementor-accordion-title");
+          var contentEl = item.querySelector(".elementor-tab-content");
+          if (!titleEl || !contentEl) return;
+          var key = titleEl.textContent.trim();
+          var info = MINISTRY_COPY[key];
+          if (!info || contentEl.querySelector(".mc-ministry-panel")) return;
+          if (contentEl.textContent.trim().length > 25) return;
+
+          var img = contentEl.querySelector("img");
+          var panel = document.createElement("div");
+          panel.className = "mc-ministry-panel";
+          var mediaDiv = document.createElement("div");
+          mediaDiv.className = "mc-ministry-panel-media";
+          if (img) mediaDiv.appendChild(img);
+
+          var bodyDiv = document.createElement("div");
+          bodyDiv.className = "mc-ministry-panel-body";
+          bodyDiv.innerHTML =
+            '<span class="mc-ministry-meta">' +
+            info.meta +
+            "</span>" +
+            "<p>" +
+            info.desc +
+            "</p>" +
+            '<a class="mc-pill-link" href="' +
+            info.ctaHref +
+            '">' +
+            info.ctaLabel +
+            " \u2192</a>";
+
+          if (img) panel.appendChild(mediaDiv);
+          panel.appendChild(bodyDiv);
+          contentEl.innerHTML = "";
+          contentEl.appendChild(panel);
+        });
+      }
+
+      // Give: fix typos ("using and app" -> "using an app", "is build into" -> "is built into")
+      if (p === "/give/") {
+        document.querySelectorAll(".elementor-icon-box-description").forEach(function (el) {
+          el.textContent = el.textContent
+            .replace(/\busing and app\b/gi, "using an app")
+            .replace(/\bis build into\b/gi, "is built into");
+        });
+      }
+
+      // I'm New: update Abundant Life Groups subtitle to active Tuesday Night Bible Study
+      if (p === "/im-new/") {
+        document.querySelectorAll(".elementor-icon-box-description").forEach(function (el) {
+          if (el.textContent && el.textContent.trim() === "Abundant Life Groups") {
+            el.textContent = "Tuesday Bible Study (Zoom · 7:30 PM)";
+          }
+        });
+      }
+
+      // Prayer: clarify Monday 6:30 AM & weekly prayer schedule
+      if (p === "/prayer/") {
+        document.querySelectorAll(".elementor-widget-text-editor p").forEach(function (el) {
+          if (el.textContent && el.textContent.indexOf("6 AM on Zoom") !== -1) {
+            el.textContent =
+              "We gather for Sanctuary Prayer every Sunday at 10:00 AM, Pastor's Morning Prayer on Mondays at 6:30 AM on Zoom, and our Weekly Prayer Line Tuesday–Thursday at 7:00 AM on Zoom.";
+          }
+        });
+      }
+
+      // Message Nuggets: upgrade http:// YouTube thumbnails to https://
+      if (p === "/message-nuggets/") {
+        document.querySelectorAll("img[src^='http://img.youtube.com']").forEach(function (img) {
+          img.setAttribute("src", img.getAttribute("src").replace(/^http:\/\//, "https://"));
+        });
+      }
+
+      // Contact: insert clean church info summary banner above form
+      if (p === "/contact/") {
+        var formSec = document.querySelector(".elementor-widget-SFMBFMS, .elementor-element-c005a35 .elementor-widget-wrap");
+        var container = document.querySelector(".elementor-element-c005a35 .elementor-widget-wrap");
+        if (container && !container.querySelector(".mc-contact-banner")) {
+          var banner = document.createElement("div");
+          banner.className = "mc-contact-banner";
+          banner.innerHTML =
+            "<div><h4>Visit Our Sanctuary</h4><p>130 Highland Avenue<br/>Somerville, MA 02143</p></div>" +
+            "<div><h4>Sunday Schedule</h4><p>10:00 AM Prayer · 10:30 AM Sunday School<br/>12:00 PM Sunday Worship</p></div>" +
+            "<div><h4>Direct Contact</h4><p>Phone: <a href='tel:6178636614'>(617) 863-6614</a><br/>Email: <a href='mailto:missionchurch1@gmail.com'>missionchurch1@gmail.com</a></p></div>";
+          container.insertBefore(banner, formSec || container.firstChild);
+        }
+      }
+
+      // Global Footer fixes (address capitalization, mailto:, © 2026)
+      document.querySelectorAll('a[href*="MISSIONCHURCH"], a[href*="missionchurch1"]').forEach(function (a) {
+        var href = a.getAttribute("href") || "";
+        if (href.toLowerCase().indexOf("mailto") === 0 && href.indexOf("mailto:") !== 0) {
+          a.setAttribute("href", "mailto:missionchurch1@gmail.com");
+        }
+      });
+
+      document.querySelectorAll("footer, .elementor-location-footer, .elementor-element-6acf3bca").forEach(function (ftr) {
+        ftr.querySelectorAll("h6").forEach(function (h) {
+          if (/130\s+highland\s+avenue/i.test(h.textContent)) {
+            h.textContent = "130 Highland Avenue, Somerville, MA 02143";
+          }
+        });
+        ftr.querySelectorAll("p").forEach(function (pEl) {
+          if (pEl.textContent.replace(/\u00a0/g, "").trim() === "" && !pEl.querySelector("img")) {
+            pEl.style.display = "none";
+          }
+          if (pEl.innerHTML && pEl.innerHTML.indexOf("2025") !== -1 && pEl.innerHTML.indexOf("All Rights Reserved") !== -1) {
+            pEl.innerHTML = pEl.innerHTML.replace(/©\s*2025\s*All Rights Reserved/gi, "© 2026 All Rights Reserved");
+          }
+        });
+      });
+    }
+
+    function runAll() {
+      ensureTopNavAndSlider();
+      polishPagesContent();
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", runAll);
+    } else {
+      runAll();
+    }
+  })();
+</script>
