@@ -13,6 +13,20 @@
   /* =========================================================
      1. GLOBAL HEADER & NAVIGATION PARITY ACROSS ALL PAGES
      ========================================================= */
+  header.elementor-top-section,
+  header.elementor-top-section.ang-section-padding-initial,
+  header.elementor-top-section.ang-section-padding-no {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  body.mc-slider-mounted header.elementor-top-section + section,
+  .elementor-2991 .elementor-element-4f1261e,
+  .elementor-2924 .elementor-element-5bc4f167,
+  .elementor-2234 .elementor-element-62a0dc42 {
+    margin-top: 0 !important;
+  }
+
   header.elementor-top-section > .elementor-container > .elementor-column > .elementor-widget-wrap,
   nav.elementor-top-section > .elementor-container > .elementor-column > .elementor-widget-wrap {
     display: flex !important;
@@ -257,6 +271,29 @@
     padding: 20px 16px !important;
     box-shadow: 0 4px 14px rgba(30, 23, 32, 0.04);
     transition: transform 0.18s ease, box-shadow 0.18s ease;
+    height: 100%;
+  }
+
+  /* Prevent jarring mid-flight entrance animation overlap on /give/ & /ministries/ */
+  .elementor-2234 .elementor-element-62a0dc42 .elementor-container {
+    align-items: stretch !important;
+    padding: 28px 12px 12px !important;
+  }
+
+  @media (min-width: 768px) {
+    .page-id-2234 .elementor-element-62a0dc42 .elementor-column {
+      display: flex;
+    }
+  }
+
+  .elementor-2234 .elementor-element-233c8aeb,
+  .elementor-2234 .elementor-element-196f34c8,
+  .elementor-2234 .elementor-element-259be5b0,
+  .elementor-2235 .elementor-element-7660a5a1 {
+    opacity: 1 !important;
+    visibility: visible !important;
+    animation: none !important;
+    transform: none !important;
   }
 
   .page-id-2212 .elementor-element-41d99165 .elementor-column > .elementor-widget-wrap:hover,
@@ -782,127 +819,148 @@
       var p = normPath(window.location.pathname);
 
       // Home: fix "Tabitha'sCloset" typo
-      if (p === "/") {
-        document.querySelectorAll(".elementor-icon-box-title, h3").forEach(function (el) {
-          if (el.textContent && el.textContent.indexOf("Tabitha'sCloset") !== -1) {
-            el.textContent = el.textContent.replace("Tabitha'sCloset", "Tabitha's Closet");
-          }
-        });
-      }
+      try {
+        if (p === "/") {
+          document.querySelectorAll(".elementor-icon-box-title, h3").forEach(function (el) {
+            if (el.textContent && el.textContent.indexOf("Tabitha'sCloset") !== -1) {
+              el.textContent = el.textContent.replace("Tabitha'sCloset", "Tabitha's Closet");
+            }
+          });
+        }
+      } catch (e) {}
 
-      // Ministries: enrich empty 250x250 accordion panels
-      if (p === "/ministries/") {
-        document.querySelectorAll(".elementor-accordion-item").forEach(function (item) {
-          var titleEl = item.querySelector(".elementor-accordion-title");
-          var contentEl = item.querySelector(".elementor-tab-content");
-          if (!titleEl || !contentEl) return;
-          var key = titleEl.textContent.trim();
-          var info = MINISTRY_COPY[key];
-          if (!info || contentEl.querySelector(".mc-ministry-panel")) return;
-          if (contentEl.textContent.trim().length > 25) return;
+      // Ministries: clear stuck entrance animation class & enrich empty accordion panels
+      try {
+        if (p === "/ministries/") {
+          document.querySelectorAll(".elementor-element-7660a5a1").forEach(function (el) {
+            el.classList.remove("elementor-invisible", "animated", "slideInRight");
+          });
+          document.querySelectorAll(".elementor-accordion-item").forEach(function (item) {
+            var titleEl = item.querySelector(".elementor-accordion-title");
+            var contentEl = item.querySelector(".elementor-tab-content");
+            if (!titleEl || !contentEl) return;
+            var key = titleEl.textContent.trim();
+            var info = MINISTRY_COPY[key];
+            if (!info || contentEl.querySelector(".mc-ministry-panel")) return;
+            if (contentEl.textContent.trim().length > 25) return;
 
-          var img = contentEl.querySelector("img");
-          var panel = document.createElement("div");
-          panel.className = "mc-ministry-panel";
-          var mediaDiv = document.createElement("div");
-          mediaDiv.className = "mc-ministry-panel-media";
-          if (img) mediaDiv.appendChild(img);
+            var img = contentEl.querySelector("img");
+            var panel = document.createElement("div");
+            panel.className = "mc-ministry-panel";
+            var mediaDiv = document.createElement("div");
+            mediaDiv.className = "mc-ministry-panel-media";
+            if (img) mediaDiv.appendChild(img);
 
-          var bodyDiv = document.createElement("div");
-          bodyDiv.className = "mc-ministry-panel-body";
-          bodyDiv.innerHTML =
-            '<span class="mc-ministry-meta">' +
-            info.meta +
-            "</span>" +
-            "<p>" +
-            info.desc +
-            "</p>" +
-            '<a class="mc-pill-link" href="' +
-            info.ctaHref +
-            '">' +
-            info.ctaLabel +
-            " \u2192</a>";
+            var bodyDiv = document.createElement("div");
+            bodyDiv.className = "mc-ministry-panel-body";
+            bodyDiv.innerHTML =
+              '<span class="mc-ministry-meta">' +
+              info.meta +
+              "</span>" +
+              "<p>" +
+              info.desc +
+              "</p>" +
+              '<a class="mc-pill-link" href="' +
+              info.ctaHref +
+              '">' +
+              info.ctaLabel +
+              " \u2192</a>";
 
-          if (img) panel.appendChild(mediaDiv);
-          panel.appendChild(bodyDiv);
-          contentEl.innerHTML = "";
-          contentEl.appendChild(panel);
-        });
-      }
+            if (img) panel.appendChild(mediaDiv);
+            panel.appendChild(bodyDiv);
+            contentEl.innerHTML = "";
+            contentEl.appendChild(panel);
+          });
+        }
+      } catch (e) {}
 
-      // Give: fix typos ("using and app" -> "using an app", "is build into" -> "is built into")
-      if (p === "/give/") {
-        document.querySelectorAll(".elementor-icon-box-description").forEach(function (el) {
-          el.textContent = el.textContent
-            .replace(/\busing and app\b/gi, "using an app")
-            .replace(/\bis build into\b/gi, "is built into");
-        });
-      }
+      // Give: clear slideInDown animation & fix typos ("using and app" -> "using an app", "is build into" -> "is built into")
+      try {
+        if (p === "/give/") {
+          document.querySelectorAll(".elementor-element-233c8aeb, .elementor-element-196f34c8, .elementor-element-259be5b0").forEach(function (el) {
+            el.classList.remove("elementor-invisible", "animated", "slideInDown");
+          });
+          document.querySelectorAll(".elementor-icon-box-description").forEach(function (el) {
+            el.textContent = el.textContent
+              .replace(/\busing and app\b/gi, "using an app")
+              .replace(/\bis build into\b/gi, "is built into");
+          });
+        }
+      } catch (e) {}
 
       // I'm New: update Abundant Life Groups subtitle to active Tuesday Night Bible Study
-      if (p === "/im-new/") {
-        document.querySelectorAll(".elementor-icon-box-description").forEach(function (el) {
-          if (el.textContent && el.textContent.trim() === "Abundant Life Groups") {
-            el.textContent = "Tuesday Bible Study (Zoom · 7:30 PM)";
-          }
-        });
-      }
+      try {
+        if (p === "/im-new/") {
+          document.querySelectorAll(".elementor-icon-box-description").forEach(function (el) {
+            if (el.textContent && el.textContent.trim() === "Abundant Life Groups") {
+              el.textContent = "Tuesday Bible Study (Zoom · 7:30 PM)";
+            }
+          });
+        }
+      } catch (e) {}
 
       // Prayer: clarify Monday 6:30 AM & weekly prayer schedule
-      if (p === "/prayer/") {
-        document.querySelectorAll(".elementor-widget-text-editor p").forEach(function (el) {
-          if (el.textContent && el.textContent.indexOf("6 AM on Zoom") !== -1) {
-            el.textContent =
-              "We gather for Sanctuary Prayer every Sunday at 10:00 AM, Pastor's Morning Prayer on Mondays at 6:30 AM on Zoom, and our Weekly Prayer Line Tuesday–Thursday at 7:00 AM on Zoom.";
-          }
-        });
-      }
+      try {
+        if (p === "/prayer/") {
+          document.querySelectorAll(".elementor-widget-text-editor p").forEach(function (el) {
+            if (el.textContent && el.textContent.indexOf("6 AM on Zoom") !== -1) {
+              el.textContent =
+                "We gather for Sanctuary Prayer every Sunday at 10:00 AM, Pastor's Morning Prayer on Mondays at 6:30 AM on Zoom, and our Weekly Prayer Line Tuesday\u2013Thursday at 7:00 AM on Zoom.";
+            }
+          });
+        }
+      } catch (e) {}
 
       // Message Nuggets: upgrade http:// YouTube thumbnails to https://
-      if (p === "/message-nuggets/") {
-        document.querySelectorAll("img[src^='http://img.youtube.com']").forEach(function (img) {
-          img.setAttribute("src", img.getAttribute("src").replace(/^http:\/\//, "https://"));
-        });
-      }
-
-      // Contact: insert clean church info summary banner above form
-      if (p === "/contact/") {
-        var formSec = document.querySelector(".elementor-widget-SFMBFMS, .elementor-element-c005a35 .elementor-widget-wrap");
-        var container = document.querySelector(".elementor-element-c005a35 .elementor-widget-wrap");
-        if (container && !container.querySelector(".mc-contact-banner")) {
-          var banner = document.createElement("div");
-          banner.className = "mc-contact-banner";
-          banner.innerHTML =
-            "<div><h4>Visit Our Sanctuary</h4><p>130 Highland Avenue<br/>Somerville, MA 02143</p></div>" +
-            "<div><h4>Sunday Schedule</h4><p>10:00 AM Prayer · 10:30 AM Sunday School<br/>12:00 PM Sunday Worship</p></div>" +
-            "<div><h4>Direct Contact</h4><p>Phone: <a href='tel:6178636614'>(617) 863-6614</a><br/>Email: <a href='mailto:missionchurch1@gmail.com'>missionchurch1@gmail.com</a></p></div>";
-          container.insertBefore(banner, formSec || container.firstChild);
+      try {
+        if (p === "/message-nuggets/") {
+          document.querySelectorAll("img[src^='http://img.youtube.com']").forEach(function (img) {
+            img.setAttribute("src", img.getAttribute("src").replace(/^http:\/\//, "https://"));
+          });
         }
-      }
+      } catch (e) {}
+
+      // Contact: insert clean church info summary banner safely inside column wrap
+      try {
+        if (p === "/contact/") {
+          var container = document.querySelector(".elementor-element-c005a35 .elementor-widget-wrap");
+          if (container && !container.querySelector(".mc-contact-banner")) {
+            var banner = document.createElement("div");
+            banner.className = "mc-contact-banner";
+            banner.innerHTML =
+              "<div><h4>Visit Our Sanctuary</h4><p>130 Highland Avenue<br/>Somerville, MA 02143</p></div>" +
+              "<div><h4>Sunday Schedule</h4><p>10:00 AM Prayer \u00b7 10:30 AM Sunday School<br/>12:00 PM Sunday Worship</p></div>" +
+              "<div><h4>Direct Contact</h4><p>Phone: <a href='tel:6178636614'>(617) 863-6614</a><br/>Email: <a href='mailto:missionchurch1@gmail.com'>missionchurch1@gmail.com</a></p></div>";
+            container.insertBefore(banner, container.firstChild);
+          }
+        }
+      } catch (e) {}
 
       // Global Footer fixes (address capitalization, mailto:, © 2026)
-      document.querySelectorAll('a[href*="MISSIONCHURCH"], a[href*="missionchurch1"]').forEach(function (a) {
-        var href = a.getAttribute("href") || "";
-        if (href.toLowerCase().indexOf("mailto") === 0 && href.indexOf("mailto:") !== 0) {
-          a.setAttribute("href", "mailto:missionchurch1@gmail.com");
-        }
-      });
+      try {
+        document.querySelectorAll('a[href*="MISSIONCHURCH"], a[href*="missionchurch1"]').forEach(function (a) {
+          var href = a.getAttribute("href") || "";
+          if (href.toLowerCase().indexOf("mailto") === 0 && href.indexOf("mailto:") !== 0) {
+            a.setAttribute("href", "mailto:missionchurch1@gmail.com");
+          }
+        });
 
-      document.querySelectorAll("footer, .elementor-location-footer, .elementor-element-6acf3bca").forEach(function (ftr) {
-        ftr.querySelectorAll("h6").forEach(function (h) {
-          if (/130\s+highland\s+avenue/i.test(h.textContent)) {
-            h.textContent = "130 Highland Avenue, Somerville, MA 02143";
-          }
+        document.querySelectorAll("footer, .elementor-location-footer, .elementor-element-6acf3bca").forEach(function (ftr) {
+          ftr.querySelectorAll("h6").forEach(function (h) {
+            if (/130\s+highland\s+avenue/i.test(h.textContent)) {
+              h.textContent = "130 Highland Avenue, Somerville, MA 02143";
+            }
+          });
+          ftr.querySelectorAll("p").forEach(function (pEl) {
+            if (pEl.textContent.replace(/\u00a0/g, "").trim() === "" && !pEl.querySelector("img")) {
+              pEl.style.display = "none";
+            }
+            if (pEl.innerHTML && pEl.innerHTML.indexOf("2025") !== -1 && pEl.innerHTML.indexOf("All Rights Reserved") !== -1) {
+              pEl.innerHTML = pEl.innerHTML.replace(/©\s*2025\s*All Rights Reserved/gi, "© 2026 All Rights Reserved");
+            }
+          });
         });
-        ftr.querySelectorAll("p").forEach(function (pEl) {
-          if (pEl.textContent.replace(/\u00a0/g, "").trim() === "" && !pEl.querySelector("img")) {
-            pEl.style.display = "none";
-          }
-          if (pEl.innerHTML && pEl.innerHTML.indexOf("2025") !== -1 && pEl.innerHTML.indexOf("All Rights Reserved") !== -1) {
-            pEl.innerHTML = pEl.innerHTML.replace(/©\s*2025\s*All Rights Reserved/gi, "© 2026 All Rights Reserved");
-          }
-        });
-      });
+      } catch (e) {}
     }
 
     function runAll() {
