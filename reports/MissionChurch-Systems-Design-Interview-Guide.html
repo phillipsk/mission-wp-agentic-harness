@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mission Church Platform &amp; WordPress Agentic Harness • Systems Design Interview Guide</title>
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #0A111D;
+    --surface: #121D30;
+    --card: #17253B;
+    --border: #293E5E;
+    --gold: #FBD38D;
+    --teal: #4FD1C5;
+    --blue: #63B3ED;
+    --purple: #B794F4;
+    --green: #68D391;
+    --rose: #F687B3;
+    --text: #F1F5F9;
+    --muted: #94A3B8;
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; background:var(--bg); color:var(--text); line-height:1.65; }
+  .nav { position:sticky; top:0; z-index:20; background:rgba(10,17,29,.92); backdrop-filter:blur(10px); border-bottom:1px solid var(--border); padding:10px 20px; display:flex; gap:14px; flex-wrap:wrap; align-items:center; justify-content:center; }
+  .nav a { color:#CBD5E1; text-decoration:none; font-size:12.5px; font-weight:700; padding:5px 10px; border-radius:999px; }
+  .nav a:hover { background:rgba(251,211,141,.16); color:var(--gold); }
+  .hero { background:linear-gradient(135deg,#0F2038 0%,#3A1421 55%,#143D3E 100%); border-bottom:1px solid var(--border); padding:44px 24px 36px; }
+  .wrap { max-width:1160px; margin:0 auto; padding:0 20px; }
+  .eyebrow { color:var(--gold); font-size:12px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; }
+  h1 { margin:8px 0 12px; font-size:34px; line-height:1.18; }
+  .sub { color:#CBD5E1; font-size:15.5px; max-width:880px; margin:0; }
+  .stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(168px,1fr)); gap:14px; margin-top:24px; }
+  .stat { background:rgba(10,17,29,.65); border:1px solid rgba(251,211,141,.28); border-radius:14px; padding:14px 16px; }
+  .stat .v { font-size:23px; font-weight:800; color:var(--gold); }
+  .stat .k { font-size:12px; color:#CBD5E1; margin-top:2px; }
+  section { padding:34px 0; border-bottom:1px solid #1C2B42; }
+  h2 { font-size:23px; color:var(--gold); margin:0 0 14px; }
+  h3 { font-size:17px; color:#FFF; margin:12px 0 8px; }
+  .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  .grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+  @media (max-width:860px) { .grid-2, .grid-3 { grid-template-columns:1fr; } }
+  .card { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:20px; }
+  .pitch { background:linear-gradient(135deg,#2A1422,#163638); border:1px solid rgba(251,211,141,.4); border-radius:16px; padding:22px; }
+  .pill { display:inline-block; font-size:11px; font-weight:700; padding:3px 9px; border-radius:999px; margin:2px 4px 2px 0; }
+  .p-gold { background:rgba(251,211,141,.18); color:var(--gold); border:1px solid rgba(251,211,141,.38); }
+  .p-teal { background:rgba(79,209,197,.15); color:var(--teal); border:1px solid rgba(79,209,197,.35); }
+  .p-blue { background:rgba(99,179,237,.16); color:var(--blue); border:1px solid rgba(99,179,237,.35); }
+  .p-purple { background:rgba(183,148,244,.16); color:var(--purple); border:1px solid rgba(183,148,244,.35); }
+  .p-green { background:rgba(104,211,145,.15); color:var(--green); border:1px solid rgba(104,211,145,.35); }
+  .p-rose { background:rgba(246,135,179,.15); color:var(--rose); border:1px solid rgba(246,135,179,.35); }
+  code { background:#0B1322; color:#93C5FD; padding:2px 6px; border-radius:6px; font-size:12.5px; }
+  .muted { color:var(--muted); font-size:13px; }
+  .arch-box { background:#0D1626; border:1px solid var(--border); border-radius:16px; padding:20px; overflow-x:auto; }
+  .arch-row { display:grid; grid-template-columns:repeat(4,minmax(210px,1fr)); gap:14px; align-items:stretch; }
+  .arch-col { background:#142238; border:1px solid #2D4568; border-radius:14px; padding:14px; }
+  .arch-col h4 { margin:0 0 8px; color:var(--gold); font-size:13px; text-transform:uppercase; letter-spacing:.06em; }
+  .arch-col ul { margin:0; padding-left:16px; font-size:12.5px; color:#E2E8F0; }
+  .arch-col li { margin:5px 0; }
+  .timeline { border-left:3px solid #2D4568; padding-left:20px; margin-left:8px; }
+  .tl-item { position:relative; background:var(--card); border:1px solid var(--border); border-radius:14px; padding:16px 18px; margin-bottom:14px; }
+  .tl-item::before { content:""; position:absolute; left:-29px; top:20px; width:13px; height:13px; border-radius:50%; background:var(--gold); border:3px solid var(--bg); }
+  table { width:100%; border-collapse:collapse; font-size:13.5px; }
+  th { background:#101C2F; color:var(--gold); text-align:left; padding:11px 12px; border-bottom:1px solid var(--border); }
+  td { padding:11px 12px; border-bottom:1px solid #1E2E47; vertical-align:top; }
+  .qa-item { background:var(--card); border:1px solid var(--border); border-radius:14px; margin-bottom:12px; overflow:hidden; }
+  .qa-q { width:100%; text-align:left; background:none; border:none; color:#FFF; font-size:15px; font-weight:700; padding:16px 18px; cursor:pointer; display:flex; justify-content:space-between; align-items:center; gap:12px; }
+  .qa-q:hover { background:rgba(251,211,141,.06); }
+  .qa-a { display:none; padding:0 18px 18px; color:#DCE6F2; font-size:14px; border-top:1px solid #243752; }
+  .qa-item.open .qa-a { display:block; padding-top:14px; }
+  .qa-item.open .chev { transform:rotate(180deg); }
+  .chev { color:var(--gold); transition:transform .2s; font-size:12px; }
+  .btn { background:var(--gold); color:#0F172A; border:none; border-radius:999px; padding:8px 14px; font-weight:700; font-size:12.5px; cursor:pointer; margin-right:8px; }
+  .btn-ghost { background:#1E293B; color:#E2E8F0; border:1px solid var(--border); }
+  .callout { background:#102235; border-left:4px solid var(--teal); padding:13px 16px; border-radius:10px; margin:12px 0; font-size:14px; }
+  .callout-warn { background:#271722; border-left:4px solid var(--rose); padding:13px 16px; border-radius:10px; margin:12px 0; font-size:14px; }
+  ul { padding-left:20px; }
+  li { margin:6px 0; }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="#pitch">Elevator Pitch</a>
+  <a href="#pivot">The Board Pivot</a>
+  <a href="#arch">Architecture</a>
+  <a href="#tradeoffs">8 Design Trade-Offs</a>
+  <a href="#incident">Live Incident Post-Mortem</a>
+  <a href="#grill">10 Interview Grill Q&amp;As</a>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Systems Design &amp; Agentic Engineering Interview Preparation</div>
+    <h1>Mission Church Platform: Native Cloud Run MVP → Agentic WordPress Harness</h1>
+    <p class="sub">An end-to-end interview study guide covering how you evaluated competing web architectures, navigated real-world stakeholder (Church Board) feedback to pivot a greenfield Cloud Run MVP into an automated <strong>WordPress AI Publishing &amp; UI Harness</strong>, solved host-level security constraints, and debugged a live Gmail Pub/Sub concurrency race condition.</p>
+    <div class="stats">
+      <div class="stat"><div class="v">~$0.14/mo</div><div class="k">Idle Cloud Run + Scheduler Cost</div></div>
+      <div class="stat"><div class="v">2 Repos</div><div class="k">mission-church-web + mission-wp-agentic-harness</div></div>
+      <div class="stat"><div class="v">3-Way AI Triage</div><div class="k">Recurring Skip vs Post+MEC vs Post-Only</div></div>
+      <div class="stat"><div class="v">HMAC-SHA256</div><div class="k">Signed REST Bridge &amp; 1-Click Email Gates</div></div>
+      <div class="stat"><div class="v">14 Pages</div><div class="k">Full WordPress Header, Slider &amp; UX Overhaul</div></div>
+      <div class="stat"><div class="v">0 Vulns</div><div class="k">WPVulnerability Audit + 4 Unused Plugins Removed</div></div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<!-- SECTION 1: ELEVATOR PITCH -->
+<section id="pitch">
+  <h2>1. How to Present This Project in a Job Interview</h2>
+  <div class="grid-2">
+    <div class="pitch">
+      <span class="pill p-gold">30-Second Executive Hook</span>
+      <h3>The High-Level Framing</h3>
+      <p>"For my church's website, I originally architected a modern, scale-to-zero Node.js + Firestore + Gemini AI web app on Google Cloud Run to replace a dated WordPress site. When the church board reviewed the MVP and preferred to iterate on WordPress gradually rather than absorb the organizational shock of a full rewrite, I didn't throw away the cloud backend — I <strong>pivoted it into an Agentic WordPress Harness</strong>. Today, Cloud Run, Cloud Scheduler, and Gmail Pub/Sub watch church bulletins and calendars, use Gemini 2.5 Flash to filter recurring clutter, redact lay members' PII, generate dual flyer graphics, send 1-click HMAC-signed approval emails, and push directly into WordPress Posts and Modern Events Calendar via a custom signed PHP REST bridge — all for ~$0.14/month idle."</p>
+    </div>
+    <div class="card">
+      <span class="pill p-teal">Core Senior/Staff Engineering Signals</span>
+      <h3>What Interviewers Love About This Story</h3>
+      <ul>
+        <li><strong>Stakeholder Pragmatism Over Resume-Driven Development:</strong> Accepting Board feedback ("evolve WordPress gradually, don't force a committee reboot") and repurposing sunk cloud infrastructure instead of fighting stakeholders.</li>
+        <li><strong>Working Around Managed Host Constraints:</strong> Sharefaith's MU-plugin stripped WP Application Passwords and MEC's REST API omitted schedule metadata — solved cleanly from <code>wp-admin</code> via an HMAC-SHA256 Code Snippets REST bridge writing atomically to <code>wp_posts</code> + <code>wp_mec_events</code> + <code>wp_mec_dates</code>.</li>
+        <li><strong>LLM Safety &amp; Privacy Guardrails:</strong> Combined Gemini multimodal prompts with deterministic regex post-sanitization (<code>sanitizePublicCopy</code>) to strip regular member names/phones while preserving clergy and guest speakers.</li>
+        <li><strong>Human-in-the-Loop Publishing:</strong> Zero autonomous unreviewed writes to production — signed email action links let an admin choose Original vs. AI-generated graphics in 1 click.</li>
+        <li><strong>Honest Production Debugging:</strong> Diagnosed a live Pub/Sub concurrency + feedback-loop burst (20 duplicate approval emails in 31 seconds) using Cloud Run request logs and Gmail API metadata.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 2: THE STRATEGIC PIVOT -->
+<section id="pivot">
+  <h2>2. The Strategic Trade-Off: Native Website vs. WordPress + Agentic Harness</h2>
+  <p class="muted">Interviewers frequently ask: <em>"Tell me about a time you changed technical direction based on stakeholder feedback."</em> This timeline is your exact answer.</p>
+  <div class="timeline">
+    <div class="tl-item">
+      <span class="pill p-blue">Phase 1 • Architecture Evaluation</span>
+      <h3>Evaluated 3 Stacks: WordPress vs. Kotlin Multiplatform Wasm vs. Native Cloud Run</h3>
+      <p>Compared existing WordPress/Elementor against your existing <code>KomposeMission</code> Kotlin Multiplatform WebAssembly project (~11.3 MiB Wasm payload, canvas rendering with weak SEO) and a lightweight Node.js ESM + Vanilla JS app on Cloud Run (&lt;80 KB initial payload, HTTP <code>206</code> Range streaming for 8 Facebook Worship Shorts, Gemini 2.5 Flash AI Concierge, Firestore <code>nam5</code>, and GitHub Actions CI/CD).</p>
+    </div>
+    <div class="tl-item">
+      <span class="pill p-purple">Phase 2 • Board Review &amp; Feedback</span>
+      <h3>Why We Traded Off the Standalone Native Website</h3>
+      <p>We applied the Board's UI feedback to the Cloud Run MVP (white-forward palette, modern footer logo, max 3 homepage shorts, strictly upcoming slider events, moving ministries/pantry/prayer onto dedicated routes <code>/shorts</code>, <code>/shepherds-kitchen</code>, <code>/ministries</code>, <code>/prayer-wall</code>, <code>/visit</code>, <code>/give</code>). However, the Board concluded that a full website reboot would invite committee churn and shock regular congregation members, preferring gradual improvements on <code>missionchurchcooljc.com</code>.</p>
+    </div>
+    <div class="tl-item">
+      <span class="pill p-gold">Phase 3 • The Pivot (Agentic WordPress Harness)</span>
+      <h3>Keeping the Cloud Backend as WordPress's Automation &amp; Intelligence Layer</h3>
+      <p>Instead of shutting down GCP, we documented the native MVP in <code>phillipsk/mission-church-web</code> (kept live at ~$0.14/mo idle) and re-targeted its <strong>Cloud Scheduler + Gmail/BAND Watch + Gemini 2.5 Flash triage + approval emailer</strong> to drive <code>missionchurchcooljc.com</code> via <code>POST /wp-json/mission/v1/publish</code>, while executing a full backup, security audit, and Elementor UI/slider overhaul directly on WordPress (<code>phillipsk/mission-wp-agentic-harness</code>).</p>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 3: SYSTEM ARCHITECTURE -->
+<section id="arch">
+  <h2>3. Production Architecture: WordPress + Cloud Run Agentic Harness</h2>
+  <div class="arch-box">
+    <div class="arch-row">
+      <div class="arch-col">
+        <h4>1. Ingestion Sources</h4>
+        <ul>
+          <li><strong>Gmail Inbox:</strong> Constant Contact &amp; <code>missionchurch1@gmail.com</code> announcements/flyers arriving in <code>phillipskevin386@gmail.com</code></li>
+          <li><strong>BAND Community:</strong> Album photos, post text, overall descriptions, and attached schedule metadata</li>
+          <li><strong>Monthly Calendars:</strong> Multi-event PNG/email calendars parsed into individual net-new items</li>
+          <li><strong>Triggers:</strong> Cloud Pub/Sub push (<code>/api/webhooks/gmail-push</code>) + 15-min Cloud Scheduler (<code>mission-church-watch-poll</code>)</li>
+        </ul>
+      </div>
+      <div class="arch-col">
+        <h4>2. Cloud Run AI Orchestrator</h4>
+        <ul>
+          <li><strong>Runtime:</strong> <code>mission-church-web</code> (Node 20 ESM, <code>512Mi</code>, <code>min=0</code> scale-to-zero in <code>us-central1</code>)</li>
+          <li><strong>3-Way Triage:</strong> Gemini 2.5 Flash classifies <code>recurring_event</code> (skip), <code>special_event</code> (Post + MEC), or <code>announcement_post</code> (Post only)</li>
+          <li><strong>Privacy Filter:</strong> <code>sanitizePublicCopy()</code> strips lay member names/phones while preserving clergy/speakers</li>
+          <li><strong>Dual Visuals:</strong> Pairs Original Flyer with <code>gemini-2.5-flash-image</code> + deterministic SVG fallback</li>
+          <li><strong>State &amp; Secrets:</strong> Firestore REST (<code>app_state/mission_church</code>) + 8 Secret Manager secrets</li>
+        </ul>
+      </div>
+      <div class="arch-col">
+        <h4>3. Human-in-the-Loop Gate</h4>
+        <ul>
+          <li><strong>Approval Email:</strong> HTML preview sent via Gmail API to <code>phillipskevin386@gmail.com</code></li>
+          <li><strong>Signed Links:</strong> Every button carries an HMAC-SHA256 signature (<code>signApprovalToken(id, action)</code>) verified with <code>crypto.timingSafeEqual</code></li>
+          <li><strong>Admin Portal:</strong> Optional <code>/login</code> Studio with <code>HttpOnly</code> signed session cookies &amp; Gmail magic links</li>
+          <li><strong>Choices:</strong> 1-click Publish (Option A Original), Publish (Option B AI), Stage WP Draft, or Reject</li>
+        </ul>
+      </div>
+      <div class="arch-col">
+        <h4>4. Live WordPress Target</h4>
+        <ul>
+          <li><strong>Hosting:</strong> Sharefaith-managed WordPress + Elementor Pro + Modern Events Calendar Lite (<code>7.38.2</code>)</li>
+          <li><strong>Signed Bridge:</strong> Code Snippets #5 exposes <code>/wp-json/mission/v1/publish</code> &amp; <code>/backup</code> (<code>X-Mission-Signature</code> HMAC + <code>hash_equals</code>)</li>
+          <li><strong>Atomic Writes:</strong> Sideloads image, inserts <code>post</code> + <code>mec-events</code>, updates <code>wp_mec_events</code> / <code>wp_mec_dates</code>, flushes W3TC</li>
+          <li><strong>UI Overhaul (#8871):</strong> Unified top nav, 18 curated photos in Ken-Burns sliders, enriched Ministries tabs, footer &amp; mobile fixes</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 4: 8 SYSTEMS DESIGN TRADE-OFFS -->
+<section id="tradeoffs">
+  <h2>4. Eight Systems Design Trade-Offs to Highlight</h2>
+  <div class="card" style="padding:0; overflow-x:auto;">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:18%">Decision Area</th>
+          <th style="width:24%">Chosen Approach</th>
+          <th style="width:22%">Alternative Considered</th>
+          <th style="width:36%">Interview Justification &amp; Revisit Trigger</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>1. Platform Cutover</strong></td>
+          <td>Preserve WordPress UI + wrap with Cloud Run AI automation</td>
+          <td>Force full cutover to custom Cloud Run website</td>
+          <td>Minimizes organizational &amp; congregation shock; keeps existing Elementor/MEC editor workflows intact while eliminating manual weekly event/flyer data entry.</td>
+        </tr>
+        <tr>
+          <td><strong>2. WP Auth Bridge</strong></td>
+          <td>HMAC-SHA256 signed Code Snippets REST endpoint (<code>/wp-json/mission/v1/publish</code>)</td>
+          <td>Standard WordPress Application Passwords + <code>/wp/v2/mec-events</code></td>
+          <td>Sharefaith's MU-plugin stripped Application Password secrets, and WP REST omitted MEC schedule tables. HMAC-signed custom endpoint solved auth, media sideloading, and MEC DB rows in one atomic call without needing FTP/cPanel.</td>
+        </tr>
+        <tr>
+          <td><strong>3. UI Modernization</strong></td>
+          <td>Elementor Custom Code (#8871) sitewide CSS/JS normalization + W3TC purge</td>
+          <td>Manually re-editing all 14 Elementor page templates one by one</td>
+          <td>One version-controlled file in GitHub uniformly reordered nav menus above sliders, injected 18 curated photos into sliders, fixed <code>slideIn</code> animation overlaps, and enriched 10 empty Ministry tabs—zero risk of corrupting Elementor JSON.</td>
+        </tr>
+        <tr>
+          <td><strong>4. Content Triage</strong></td>
+          <td>3-bucket LLM classification (<code>recurring_event</code> / <code>special_event</code> / <code>announcement_post</code>)</td>
+          <td>Turn every email into both a WP Post and Calendar Event</td>
+          <td>Stops weekly recurring reminders (Sunday Worship, Mon/Tue–Thu Prayer, Bible Study) from creating duplicate clutter while preventing non-event pledges/newsletters from polluting M.E. Calendar.</td>
+        </tr>
+        <tr>
+          <td><strong>5. PII Protection</strong></td>
+          <td>Prompt instruction + deterministic regex sanitizer (<code>sanitizePublicCopy</code>)</td>
+          <td>Rely on LLM prompt alone or publish raw email body</td>
+          <td>LLMs occasionally leak contact details; deterministic regex acts as a defense-in-depth safety net stripping lay names/emails/phones while an allowlist preserves clergy &amp; speakers.</td>
+        </tr>
+        <tr>
+          <td><strong>6. State &amp; Caching</strong></td>
+          <td>Firestore REST (<code>app_state/mission_church</code>) + <code>Cache-Control: no-store</code> on APIs</td>
+          <td>Cloud SQL Postgres or container local JSON file</td>
+          <td>Cloud Run is stateless across deploys/scale-to-zero. Firestore REST avoids heavy SDKs, stays inside the free tier, and pairs with Secret Manager so GitHub stays 100% secret-free.</td>
+        </tr>
+        <tr>
+          <td><strong>7. Security Audit</strong></td>
+          <td>Backup-first REST JSON snapshot + deactivate unused plugins + WPVulnerability</td>
+          <td>Bulk-delete plugins blindly in production</td>
+          <td>Audited all 14 pages, 106 posts, and 110 events before deactivating 4 zero-usage plugins (keeping them recoverable) and deleting 3 redundant themes—reaching <code>0</code> known vulnerabilities.</td>
+        </tr>
+        <tr>
+          <td><strong>8. FinOps</strong></td>
+          <td>Scale-to-zero Cloud Run + free-tier Scheduler/Firestore/PubSub (~$0.14/mo)</td>
+          <td>Dedicated VPS / always-on worker node</td>
+          <td>Only cost above $0 free tier is 2 extra Secret Manager secrets (~$0.12/mo) and ~155 MB Artifact Registry overage (~$0.02/mo).</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- SECTION 5: REAL-WORLD INCIDENT POST-MORTEM -->
+<section id="incident">
+  <h2>5. Real-World Incident Post-Mortem: Why 20 Duplicate Emails Fired at 4:01 AM</h2>
+  <div class="callout-warn">
+    <strong>Observed Live Today (Nov 20, 2026):</strong> Inspecting your <code>phillipskevin386@gmail.com</code> inbox and Cloud Run logs revealed <strong>20 duplicate <code>[Mission Church Approval Needed]</code> emails</strong> sent in a 31-second burst (<code>04:01:11–04:01:42 AM EST</code>) for 3 real Constant Contact church emails (Christmas Candlelight Service ×9, Christmas Gift Exchange ×6, Friday Prayer Service ×5).
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <span class="pill p-rose">Root Causes Identified in Logs</span>
+      <h3>1. Pub/Sub Concurrency Race Condition</h3>
+      <p>Cloud Run logs showed <strong>29 concurrent <code>POST /api/webhooks/gmail-push</code> requests</strong> arriving between <code>09:00:51Z</code> and <code>09:01:42Z</code>. Because <code>watchAndPrepareDrafts()</code> executes a read-modify-write cycle (<code>loadStore()</code> → 10–15s Gemini + image generation → <code>sendApprovalEmail()</code> → <code>saveStore()</code>) with <strong>no in-memory mutex or atomic Firestore claim</strong>, overlapping webhook invocations all read stale <code>processedSourceIds</code> before the first request saved, firing duplicate emails in parallel.</p>
+      <h3>2. Self-Triggering Feedback Loop</h3>
+      <p>Every outgoing <code>[Mission Church Approval Needed]</code> email modifies the Gmail mailbox history, triggering another Gmail Pub/Sub notification! Combined with <code>DEFAULT_GMAIL_QUERY</code> matching broad <code>"missionchurch1@gmail.com"</code> mentions anywhere in a thread/body (without <code>-from:me -subject:"[Mission Church Approval Needed]"</code>), outgoing approval emails can keep waking up the webhook.</p>
+    </div>
+    <div class="card">
+      <span class="pill p-green">Production Remediation Pattern</span>
+      <h3>How to Fix It Permanently (Great Interview Answer!)</h3>
+      <ol>
+        <li><strong>Tighten Gmail Search Query:</strong> Add <code>in:inbox -from:me -subject:"Mission Church Approval Needed"</code> so the pipeline never inspects its own outgoing approval emails.</li>
+        <li><strong>Acknowledge Pub/Sub Immediately + Mutex:</strong> Return <code>204 No Content</code> to Pub/Sub immediately (preventing Pub/Sub retry storms if Gemini takes &gt;10s), serialize polling with an in-process <code>pollInFlight</code> lock, and set <code>--max-instances=1</code>.</li>
+        <li><strong>Atomic Claim-Before-Send (Idempotency Key):</strong> Write <code>processed_sources/gmail:{messageId}</code> to Firestore using <code>create</code> / <code>currentDocument.exists=false</code> (optimistic lock) <em>before</em> calling Gemini or sending any email. If the document already exists, skip immediately.</li>
+        <li><strong>Content/Title Deduplication Window:</strong> Deduplicate drafts by normalized <code>(title, startDate)</code> within a 7-day window so duplicate Constant Contact resends don't re-spam the admin.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 6: 10 INTERVIEW GRILL Q&As -->
+<section id="grill">
+  <h2>6. Ten Tough Systems Design Interview Questions &amp; Model Answers</h2>
+  <div style="margin-bottom:14px;">
+    <button class="btn" onclick="toggleAll(true)">Expand All Answers</button>
+    <button class="btn btn-ghost" onclick="toggleAll(false)">Collapse All</button>
+  </div>
+
+  <div class="qa-item">
+    <button class="qa-q" onclick="this.parentElement.classList.toggle('open')">
+      <span>Q1. Why didn't you just replace WordPress completely with your Node.js/Firestore Cloud Run app?</span>
+      <span class="chev">▼</span>
+    </button>
+    <div class="qa-a">
+      <p>Technical excellence isn't just picking the cleanest framework—it's optimizing for organizational adoption. The church board preferred gradual WordPress improvements to avoid committee churn and member shock. Keeping WordPress as the CMS/presentation layer while turning the Cloud Run service into an invisible AI ingestion &amp; automation harness gave us both: zero disruption for editors and visitors, plus automated calendar/flyer drafting.</p>
+    </div>
+  </div>
+
+  <div class="qa-item">
+    <button class="qa-q" onclick="this.parentElement.classList.toggle('open')">
+      <span>Q2. How did you authenticate Cloud Run to WordPress when Sharefaith's MU-plugin broke WP Application Passwords?</span>
+      <span class="chev">▼</span>
+    </button>
+    <div class="qa-a">
+      <p>Instead of compromising security by disabling host protections or storing raw admin passwords in Cloud Run, I deployed a tiny REST route (<code>/wp-json/mission/v1/publish</code>) via Code Snippets that verifies an <code>HMAC-SHA256</code> signature (<code>X-Mission-Signature</code> over the raw JSON request body) using constant-time <code>hash_equals</code> against a Secret Manager secret. That same endpoint sideloads base64 images, creates Gutenberg posts, and writes Modern Events Calendar custom tables (<code>wp_mec_events</code>, <code>wp_mec_dates</code>) atomically.</p>
+    </div>
+  </div>
+
+  <div class="qa-item">
+    <button class="qa-q" onclick="this.parentElement.classList.toggle('open')">
+      <span>Q3. Explain how you fixed the duplicate email burst we just saw in Gmail logs today. What distributed systems concepts apply?</span>
+      <span class="chev">▼</span>
+    </button>
+    <div class="qa-a">
+      <p>This is a textbook example of <strong>at-least-once webhook delivery + non-idempotent read-modify-write race condition</strong>. Gmail Pub/Sub delivered concurrent notifications on <code>/api/webhooks/gmail-push</code> while earlier invocations were still awaiting Gemini inference and hadn't written <code>processedSourceIds</code> back to Firestore. The production fix uses three standard patterns: (1) an <strong>atomic compare-and-set / create-if-absent idempotency lock</strong> in Firestore before side effects (email sending), (2) <strong>Pub/Sub fast-ack + single-flight mutex</strong> to prevent retry amplification during slow LLM calls, and (3) <strong>query exclusion</strong> (<code>-from:me</code>) to break self-triggering loops.</p>
+    </div>
+  </div>
+
+  <div class="qa-item">
+    <button class="qa-q" onclick="this.parentElement.classList.toggle('open')">
+      <span>Q4. How do you ensure an AI pipeline never leaks regular congregation members' personal contact info onto a public website?</span>
+      <span class="chev">▼</span>
+    </button>
+    <div class="qa-a">
+      <p>Never trust a single LLM prompt for PII compliance. We apply <strong>defense-in-depth</strong>: (1) structured Gemini prompt rules distinguishing lay members from billed clergy/speakers, (2) a deterministic regex post-processor (<code>sanitizePublicCopy</code>) replacing casual member references (e.g., <code>Brother/Sister X</code>) and non-official email addresses with the church office line while preserving clergy titles/speakers, and (3) a mandatory <strong>human-in-the-loop approval email</strong> before anything reaches WordPress.</p>
+    </div>
+  </div>
+
+  <div class="qa-item">
+    <button class="qa-q" onclick="this.parentElement.classList.toggle('open')">
+      <span>Q5. Why store state as a single Firestore document (<code>app_state/mission_church</code>) vs. separate collections, and when does that break?</span>
+      <span class="chev">▼</span>
+    </button>
+    <div class="qa-a">
+      <p>For low-write church traffic (&lt;100 writes/day), a single document gives instant atomic bootstrap reads (1 Firestore read per cold start/sync) and fits easily in the free tier. <strong>Revisit triggers:</strong> Firestore caps documents at 1 MiB and ~1 write/sec sustained contention—so as <code>processedSourceIds</code> and <code>pendingPosts</code> grow, or to enable atomic per-message idempotency locks, move <code>processedSourceIds</code> into a dedicated collection <code>processed_sources/{sourceId}</code>.</p>
+    </div>
+  </div>
+
+  <div class="qa-item">
+    <button class="qa-q" onclick="this.parentElement.classList.toggle('open')">
+      <span>Q6. How did you safely overhaul 14 Elementor pages without breaking live layouts or losing rollback capability?</span>
+      <span class="chev">▼</span>
+    </button>
+    <div class="qa-a">
+      <p>First, captured a full pre-audit REST JSON backup of all 14 pages, 106 posts, 110 events, and taxonomies. Second, audited shortcode usage programmatically across the backup before deactivating (not immediately deleting) 4 zero-usage plugins. Third, implemented the sitewide header, slider, and page fixes inside a single reversible Elementor Custom Code snippet (#8871) instead of mutating 14 Elementor serialized layouts—and verified desktop (<code>1440×900</code>) and mobile (<code>390×844</code>) bounding boxes via automated headless browser checks.</p>
+    </div>
+  </div>
+
+  <div class="qa-item">
+    <button class="qa-q" onclick="this.parentElement.classList.toggle('open')">
+      <span>Q7. Tell me about a tricky frontend bug you caught during visual verification of the WordPress overhaul.</span>
+      <span class="chev">▼</span>
+    </button>
+    <div class="qa-a">
+      <p>On the first verification pass, screenshots of <code>/give/</code> and <code>/ministries/</code> showed cards overlapping the hero slider and an image overlapping the <em>"Why We Serve"</em> heading—even though static CSS had <code>margin-top: 0</code>. Checking bounding boxes immediately after load vs. 2 seconds later proved it was Elementor's entrance animations (<code>animated slideInDown</code> and <code>animated slideInRight</code>) frozen or caught mid-flight! Disabling those animations and resetting transforms eliminated the overlap on initial paint.</p>
+    </div>
+  </div>
+
+  <div class="qa-item">
+    <button class="qa-q" onclick="this.parentElement.classList.toggle('open')">
+      <span>Q8. How does your WordPress security hygiene prevent credential leaks across two public GitHub repositories?</span>
+      <span class="chev">▼</span>
+    </button>
+    <div class="qa-a">
+      <p>Zero secrets live in Git. All API keys, Gmail OAuth refresh tokens, and the WordPress HMAC shared secret live in <strong>Google Cloud Secret Manager</strong> and are injected at runtime by Cloud Run; WordPress reads its secret server-side without committing it in <code>mission-wp-agentic-harness</code>. Every commit in the portfolio repo is gated by regex secret scanning before pushing.</p>
+    </div>
+  </div>
+
+  <div class="qa-item">
+    <button class="qa-q" onclick="this.parentElement.classList.toggle('open')">
+      <span>Q9. How do the two GitHub repositories (<code>mission-church-web</code> and <code>mission-wp-agentic-harness</code>) relate?</span>
+      <span class="chev">▼</span>
+    </button>
+    <div class="qa-a">
+      <p><code>mission-church-web</code> is the runnable Cloud Run Node.js backend, Firestore store, AI Concierge, Board-reviewed native MVP, and automated GitHub Actions CI/CD deployment. <code>mission-wp-agentic-harness</code> captures the WordPress-facing integration layer: the secret-free PHP HMAC bridge, the sitewide Elementor CSS/JS overhaul engine, synced triage logic, architectural diagrams, and the plugin/draft audit HTML reports.</p>
+    </div>
+  </div>
+
+  <div class="qa-item">
+    <button class="qa-q" onclick="this.parentElement.classList.toggle('open')">
+      <span>Q10. How did you keep GCP hosting costs at ~$0.14/month while running 24/7 email automation and an AI backend?</span>
+      <span class="chev">▼</span>
+    </button>
+    <div class="qa-a">
+      <p>Everything uses serverless pay-per-use with scale-to-zero: Cloud Run (<code>min-instances=0</code>), Cloud Scheduler (15-min interval, well inside the 3 free jobs), Pub/Sub, and Firestore free tiers cost $0 at church traffic volume. Only 2 Secret Manager secrets beyond the 6 free secrets (~$0.12/mo) and ~155 MB Artifact Registry overage (~$0.02/mo) incur minimal billing.</p>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<script>
+function toggleAll(open) {
+  document.querySelectorAll('.qa-item').forEach(el => el.classList.toggle('open', open));
+}
+</script>
+</body>
+</html>
