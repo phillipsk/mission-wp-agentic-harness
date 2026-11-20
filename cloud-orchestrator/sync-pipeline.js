@@ -598,7 +598,6 @@ export async function watchAndPrepareDrafts({
 
         const remoteImageUrl = extractBestImageUrlFromHtml(html);
         const remoteImageData = await fetchRemoteImageAsBase64(remoteImageUrl);
-        const subject = headers.subject || "Mission Church Announcement";
 
         // Check Gmail image attachments if email embeds a flyer/monthly calendar as attachment
         let attachmentImg = null;
