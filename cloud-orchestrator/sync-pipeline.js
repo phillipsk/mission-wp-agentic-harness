@@ -1,6 +1,7 @@
 import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
+import { claimSourceId } from "./firestore-store.js";
 import { resolveGeminiApiKey } from "./gemini-concierge.js";
 import {
   parseMonthlyCalendarOrEmail,
@@ -12,7 +13,19 @@ import {
 const DEFAULT_PUBLIC_BASE_URL =
   process.env.PUBLIC_BASE_URL || "https://mission-church-web-5jdy3d7zua-uc.a.run.app";
 const DEFAULT_GMAIL_QUERY =
-  'from:missionchurch1@gmail.com OR from:missionchurch@missionchurchofchrist.ccsend.com OR from:band.us OR "missionchurch1@gmail.com"';
+  'in:inbox -from:me -subject:"[Mission Church Approval Needed]" (from:missionchurch1@gmail.com OR from:missionchurch@missionchurchofchrist.ccsend.com OR from:missionchurch1-gmail.com@shared1.ccsend.com OR from:band.us)';
+
+function normalizeEventDedupKey(title = "", startDate = "", dateDisplay = "") {
+  const cleanTitle = String(title || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+  const datePart = String(startDate || dateDisplay || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "")
+    .slice(0, 16);
+  return `${cleanTitle}::${datePart}`;
+}
 
 function getMimeType(filePath) {
   const ext = path.extname(filePath).toLowerCase();
@@ -536,6 +549,13 @@ export async function watchAndPrepareDrafts({
   const apiKey = resolveGeminiApiKey();
   const token = await fetchGmailTokenIfConfigured();
   const processed = new Set(store.processedSourceIds || []);
+  const existingKeys = new Set([
+    ...(store.pendingPosts || []).map((p) => normalizeEventDedupKey(p.title, p.startDate, p.dateDisplay)),
+    ...(store.feed || []).map((p) => normalizeEventDedupKey(p.title, p.startDate, p.dateDisplay)),
+  ]);
+  const existingTitles = new Set(
+    (store.pendingPosts || []).map((p) => String(p.title || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim())
+  );
   const newDrafts = [];
   const emailResults = [];
 
@@ -551,6 +571,13 @@ export async function watchAndPrepareDrafts({
       for (const ref of (listData.messages || []).slice(0, 3)) {
         const sourceId = `gmail:${ref.id}`;
         if (processed.has(sourceId)) continue;
+        const claimed = await claimSourceId(sourceId);
+        if (!claimed) {
+          processed.add(sourceId);
+          continue;
+        }
+        store.processedSourceIds.push(sourceId);
+        processed.add(sourceId);
 
         const msgRes = await fetch(
           `https://gmail.googleapis.com/gmail/v1/users/me/messages/${ref.id}?format=full`,
@@ -561,6 +588,8 @@ export async function watchAndPrepareDrafts({
         const headers = Object.fromEntries(
           (msg.payload?.headers || []).map((h) => [h.name.toLowerCase(), h.value])
         );
+        const subject = headers.subject || "Mission Church Announcement";
+        if (/\[Mission Church Approval Needed\]/i.test(subject)) continue;
         const parts = flattenGmailParts(msg.payload);
         const htmlPart = parts.find((p) => p.mimeType === "text/html" && p.body?.data);
         const textPart = parts.find((p) => p.mimeType === "text/plain" && p.body?.data);
@@ -633,6 +662,13 @@ export async function watchAndPrepareDrafts({
 
         for (let idx = 0; idx < parsedItems.length; idx++) {
           const item = parsedItems[idx];
+          const normTitle = String(item.title || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+          const dedupKey = normalizeEventDedupKey(item.title, item.startDate, item.dateDisplay);
+          if ((dedupKey && existingKeys.has(dedupKey)) || (normTitle && existingTitles.has(normTitle))) {
+            continue;
+          }
+          if (dedupKey) existingKeys.add(dedupKey);
+          if (normTitle) existingTitles.add(normTitle);
           const suffix = parsedItems.length > 1 ? `-${idx + 1}` : "";
           const draftId = `draft-gmail-${ref.id}${suffix}`;
           const contentType = item.contentType === "announcement_post" ? "announcement_post" : "special_event";
@@ -689,9 +725,6 @@ export async function watchAndPrepareDrafts({
           store.pendingPosts.unshift(draft);
           newDrafts.push(draft);
         }
-
-        store.processedSourceIds.push(sourceId);
-        processed.add(sourceId);
       }
     }
   }
